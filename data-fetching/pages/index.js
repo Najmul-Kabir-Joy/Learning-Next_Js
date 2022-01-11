@@ -1,7 +1,7 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import { useEffect, useState } from 'react'
-import styles from '../styles/Home.module.css'
+// import Head from 'next/head'
+// import Image from 'next/image'
+// import { useEffect, useState } from 'react'
+// import styles from '../styles/Home.module.css'
 import fs from 'fs/promises';
 import path from 'path';
 function Home(props) {
