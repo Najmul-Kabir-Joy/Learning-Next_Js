@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import useSWR from "swr";
 
-const LastSales = () => {
-    const [sales, setSales] = useState();
+const LastSales = (props) => {
+    const [sales, setSales] = useState(props.sales);
     // const [isLoading, setIsLoading] = useState(false);
     //APPROACH USING useSWR
     //THE EXACT BELOW LINE DOESN'T WORK AT ALL SO USING THE SECOND ONE
@@ -42,7 +42,7 @@ const LastSales = () => {
     if (error) {
         return <p>Failed to load</p>
     }
-    if (!data || !sales) {
+    if (!data && !sales) {
         return <p>Loading...</p>
     }
 
@@ -60,3 +60,23 @@ const LastSales = () => {
 };
 
 export default LastSales;
+
+export async function getStaticProps() {
+    const res = await fetch('https://nextjs-practice-74d60-default-rtdb.firebaseio.com/sales.json')
+    const data = await res.json();
+    const usableData = [];
+    for (const key in data) {
+        usableData.push({
+            id: key,
+            uname: data[key].uname,
+            volume: data[key].volume
+        });
+    }
+
+    return {
+        props: {
+            sales: usableData
+        },
+        revalidate: 10
+    };
+}
