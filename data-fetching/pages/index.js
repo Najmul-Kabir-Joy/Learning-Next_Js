@@ -26,7 +26,7 @@ function Home(props) {
         }
       </ul> */}
       {
-        products.map(e => <h1 key={e.id}><Link href={`/${e.id}`}>{e.title}</Link></h1>)
+        products.map(e => <h1 key={e.id}><Link href={`/products/${e.id}`}>{e.title}</Link></h1>)
       }
     </>
   )
