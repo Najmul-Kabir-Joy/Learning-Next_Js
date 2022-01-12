@@ -3,6 +3,7 @@
 // import { useEffect, useState } from 'react'
 // import styles from '../styles/Home.module.css'
 import fs from 'fs/promises';
+import Link from 'next/link';
 import path from 'path';
 function Home(props) {
   const { products } = props;
@@ -25,7 +26,7 @@ function Home(props) {
         }
       </ul> */}
       {
-        products.map(e => <h1 key={e.id}>{e.title}</h1>)
+        products.map(e => <h1 key={e.id}><Link href={`/${e.id}`}>{e.title}</Link></h1>)
       }
     </>
   )
@@ -44,5 +45,6 @@ export async function getStaticProps() {
     revalidate: 10
   }
 }
+
 
 export default Home;
