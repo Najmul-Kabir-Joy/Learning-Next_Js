@@ -14,7 +14,7 @@ export default function Home() {
       text: msg
     }
 
-    fetch('/api/fedback', {
+    fetch('/api/feedback', {
       method: 'POST',
       body: JSON.stringify(reqBody),
       headers: {
@@ -27,7 +27,7 @@ export default function Home() {
   }
 
   const loadFedback = () => {
-    fetch('/api/fedback')
+    fetch('/api/feedback')
       .then(res => res.json())
       .then(data => setItems(data.feedback))
 
