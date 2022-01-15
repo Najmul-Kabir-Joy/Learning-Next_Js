@@ -4,6 +4,7 @@ import EventSummary from "../../components/event-detail/event-summary";
 import EventContent from "../../components/event-detail/event-content";
 import { getEventById, getAllEvents, getFeaturedEvents } from "../../helpers/api-utils";
 import ErrorAlert from "../../components/error-alert/error-alert";
+import Comments from "../../components/input/comments";
 const EventDetailsPage = (props) => {
     const event = props.selectedEvent;
     if (!event) {
@@ -23,10 +24,10 @@ const EventDetailsPage = (props) => {
                 image={event.image}
                 imageAlt={event.title}
             />
-
             <EventContent>
                 <p>{event.description}</p>
             </EventContent>
+            <Comments eventId={event.id} />
         </Fragment>
     );
 };
