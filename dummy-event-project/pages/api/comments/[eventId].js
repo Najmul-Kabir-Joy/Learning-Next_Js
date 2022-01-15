@@ -1,10 +1,14 @@
 import { MongoClient } from "mongodb";
+import { dbConnect, getAllDocuments, dataInsertion } from "../../../helpers/db-utils";
 const handler = async (req, res) => {
     const eventId = req.query.eventId;
-
-    const client = await MongoClient.connect(
-        'mongodb+srv://user:0MBKZKTqhlPzJxKi@cluster0.9qiyn.mongodb.net/practiceTime?retryWrites=true&w=majority');
-
+    let client;
+    try {
+        client = await dbConnect();
+    } catch (error) {
+        client.close();
+        return res.status(500).json({ message: 'DB connection failed' });
+    }
 
     if (req.method === 'POST') {
         const { email, name, text } = req.body;
@@ -27,27 +31,26 @@ const handler = async (req, res) => {
             eventId
         }
 
-        const db = client.db();
-        const result = await db.collection('comments').insertOne(newCommnet);
-        console.log(result);
-        newCommnet.id = result.insertedId;
-        res.status(201).json({ message: 'Added comment', comment: newCommnet })
+        try {
+            const result = dataInsertion(client, 'comments', newCommnet);
+            newCommnet.id = result.insertedId;
+            res.status(201).json({ message: 'Added comment', comment: newCommnet })
+        } catch (error) {
+            return res.status(500).json({ message: "Data insertion failed" })
+        }
 
     }
+
+    //-----------
     if (req.method === 'GET') {
-        const db = client.db();
-        const documents = await db
-            .collection('comments')
-            .find({ eventId: eventId })
-            .sort({ _id: -1 })
-            .toArray();
-        // const dummyList = [
-        //     { id: 'c1', name: 'mate', email: 'mate@mail.com', text: "talabo talbo" },
-        //     { id: 'c2', name: 'nata', email: 'nata@mail.com', text: "ye jism hein to kya" },
-        // ];
-        res.status(200).json({ comments: documents });
+        try {
+            const documents = await getAllDocuments(client, 'comments', { _id: -1 }, { eventId: eventId });
+            res.status(200).json({ comments: documents });
+        } catch (error) {
+            return;
+        }
     }
-    client.close();
+    // client.close();
 
 }
 
