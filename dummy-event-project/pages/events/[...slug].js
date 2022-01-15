@@ -8,80 +8,81 @@ import ErrorAlert from '../../components/error-alert/error-alert';
 import useSWR from 'swr';
 
 const FilteredEventPage = (props) => {
-    //FOR CSF 
-    const [loadedEvents, setLoadedEvents] = useState();
-    const router = useRouter();
-    //FOR CSF
-    const filterData = router.query.slug;
-    const { data, error } = useSWR('https://nextjs-practice-74d60-default-rtdb.firebaseio.com/events.json');
-    useEffect(() => {
-        if (data) {
-            const events = [];
+    console.log(props);
+    // //FOR CSF 
+    // const [loadedEvents, setLoadedEvents] = useState();
+    // const router = useRouter();
+    // //FOR CSF
+    // const filterData = router.query.slug;
+    // const { data, error } = useSWR('https://nextjs-practice-74d60-default-rtdb.firebaseio.com/events.json');
+    // useEffect(() => {
+    //     if (data) {
+    //         const events = [];
 
-            for (const key in data) {
-                events.push({
-                    id: key,
-                    ...data[key],
-                });
-            }
+    //         for (const key in data) {
+    //             events.push({
+    //                 id: key,
+    //                 ...data[key],
+    //             });
+    //         }
 
-            setLoadedEvents(events);
-        }
-    }, [data]);
+    //         setLoadedEvents(events);
+    //     }
+    // }, [data]);
 
-    if (!loadedEvents) {
-        return <p className='center'>Loading...</p>;
-    }
-    const filteredYear = filterData[0];
-    const filteredMonth = filterData[1];
+    // if (!loadedEvents) {
+    //     return <p className='center'>Loading...</p>;
+    // }
+    // const filteredYear = filterData[0];
+    // const filteredMonth = filterData[1];
 
-    const numYear = +filteredYear;
-    const numMonth = +filteredMonth;
+    // const numYear = +filteredYear;
+    // const numMonth = +filteredMonth;
 
-    if (
-        isNaN(numYear) ||
-        isNaN(numMonth) ||
-        numYear > 2030 ||
-        numYear < 2021 ||
-        numMonth < 1 ||
-        numMonth > 12 ||
-        error
-    ) {
-        return (
-            <Fragment>
-                <ErrorAlert>
-                    <p>Invalid filter. Please adjust your values!</p>
-                </ErrorAlert>
-                <div className='center'>
-                    <Button link='/events'>Show All Events</Button>
-                </div>
-            </Fragment>
-        );
-    }
-    //for ssr
-    // if (props.hasError) {
+    // if (
+    //     isNaN(numYear) ||
+    //     isNaN(numMonth) ||
+    //     numYear > 2030 ||
+    //     numYear < 2021 ||
+    //     numMonth < 1 ||
+    //     numMonth > 12 ||
+    //     error
+    // ) {
     //     return (
     //         <Fragment>
     //             <ErrorAlert>
-    //                 <p> Filter options are not valid </p>
+    //                 <p>Invalid filter. Please adjust your values!</p>
     //             </ErrorAlert>
-    //             <div className="center">
-    //                 <Button link='/events'>Show All events</Button>
+    //             <div className='center'>
+    //                 <Button link='/events'>Show All Events</Button>
     //             </div>
     //         </Fragment>
-    //     )
+    //     );
     // }
+    //for ssr
+    if (props.hasError) {
+        return (
+            <Fragment>
+                <ErrorAlert>
+                    <p> Filter options are not valid </p>
+                </ErrorAlert>
+                <div className="center">
+                    <Button link='/events'>Show All events</Button>
+                </div>
+            </Fragment>
+        )
+    }
     //FOR SSR
-    // const filteredEvents = props.events;
+    const filteredEvents = props.events;
 
     //FOR CSF
-    const filteredEvents = loadedEvents.filter((event) => {
-        const eventDate = new Date(event.date);
-        return (
-            eventDate.getFullYear() === numYear &&
-            eventDate.getMonth() === numMonth - 1
-        );
-    });
+    // const filteredEvents = loadedEvents.filter((event) => {
+    //     const eventDate = new Date(event.date);
+    //     return (
+    //         eventDate.getFullYear() === numYear &&
+    //         eventDate.getMonth() === numMonth - 1
+    //     );
+    // });
 
     if (!filteredEvents || filteredEvents.length === 0) {
         return (
@@ -96,9 +97,9 @@ const FilteredEventPage = (props) => {
         )
     }
     //FOR SSR
-    // const date = new Date(props.date.year, props.date.month - 1)
+    const date = new Date(props.date.year, props.date.month - 1)
     //FOR CSF
-    const date = new Date(numYear, numMonth - 1);
+    // const date = new Date(numYear, numMonth - 1);
 
     return (
         <Fragment>
@@ -108,43 +109,43 @@ const FilteredEventPage = (props) => {
     );
 };
 
-//USIGN SSR SYSTEM
-// export const getServerSideProps = async (context) => {
-//     const { params } = context;
-//     const filterData = params.slug;
-//     const filteredYear = +filterData[0];
-//     const filteredMonth = +filterData[1];
-//     if (
-//         isNaN(filteredYear) ||
-//         isNaN(filteredMonth) ||
-//         filteredYear > 2030 ||
-//         filteredYear < 2020 ||
-//         filteredMonth < 1 ||
-//         filteredMonth > 12
-//     ) {
-//         return {
-//             props: { hasError: true }
-//             // notFound: true,
-//             // redirect: {
-//             //     destination: '/error'
-//             // }
-//         }
-//     }
+// USIGN SSR SYSTEM
+export const getServerSideProps = async (context) => {
+    const { params } = context;
+    const filterData = params.slug;
+    const filteredYear = +filterData[0];
+    const filteredMonth = +filterData[1];
+    if (
+        isNaN(filteredYear) ||
+        isNaN(filteredMonth) ||
+        filteredYear > 2030 ||
+        filteredYear < 2020 ||
+        filteredMonth < 1 ||
+        filteredMonth > 12
+    ) {
+        return {
+            props: { hasError: true }
+            // notFound: true,
+            // redirect: {
+            //     destination: '/error'
+            // }
+        }
+    }
 
-//     const filteredEvents = await getFilteredEvents({
-//         year: filteredYear,
-//         month: filteredMonth
-//     });
-//     return {
-//         props: {
-//             events: filteredEvents,
-//             date: {
-//                 year: filteredYear,
-//                 month: filteredMonth
-//             }
-//         }
-//     }
+    const filteredEvents = await getFilteredEvents({
+        year: filteredYear,
+        month: filteredMonth
+    });
+    return {
+        props: {
+            events: filteredEvents,
+            date: {
+                year: filteredYear,
+                month: filteredMonth
+            }
+        }
+    }
 
-// }
+}
 
 export default FilteredEventPage;
