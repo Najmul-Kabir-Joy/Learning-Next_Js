@@ -1,8 +1,8 @@
 import styles from './comment-list.module.css';
 const CommnetList = (props) => {
-    const { items } = props;
-    if (!items) {
-        return <p>loading ...</p>
+    const { items, isLoading } = props;
+    if (isLoading) {
+        return <p className='center'>Loading...</p>
     }
     return (
         <ul className={styles.comments}>

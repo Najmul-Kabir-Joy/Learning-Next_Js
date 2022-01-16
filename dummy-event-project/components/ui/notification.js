@@ -1,4 +1,5 @@
 import { useContext } from 'react';
+import NotificationContext from '../../store/notification-context';
 import styles from './notification.module.css';
 const Notification = (props) => {
     const notificationCtx = useContext(NotificationContext);
@@ -20,10 +21,12 @@ const Notification = (props) => {
     }
     const activeClasses = `${styles.notification} ${statusClasses}`;
     return (
-    <div className={activeClasses} onClick={notificationCtx.hideNotification}>
-        <h2>{title}</h2>
-        <p>{message}</p>
-      </div>
+        <div
+            className={activeClasses}
+            onClick={notificationCtx.hideNotification}>
+            <h2>{title}</h2>
+            <p>{message}</p>
+        </div>
     );
 };
 
