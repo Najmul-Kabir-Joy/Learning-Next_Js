@@ -6,6 +6,7 @@ function MainNavigation() {
   const [session, loading] = useSession();
 
   const logoutHandler = () => {
+    // signOut({ redirect: false });
     signOut();
   }
 
